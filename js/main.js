@@ -28,7 +28,7 @@ async function initPIXI() {
     await app.init({
         width: CONSTANTS.SCREEN_WIDTH,
         height: CONSTANTS.SCREEN_HEIGHT,
-        background: 0x050510,
+        backgroundAlpha: 0,
         resolution: 1
     });
 
@@ -141,27 +141,27 @@ function initBgmPlaylist() {
 
 function playNextBgm() {
     if (isGameOver) return;
-    
+
     // If we've played all songs, reshuffle
     if (bgmCurrentIndex >= bgmPlaylist.length) {
         // Get the last played song to avoid repeating it first
         const lastSong = bgmPlaylist[bgmPlaylist.length - 1];
-        
+
         // Reshuffle
         bgmPlaylist = shuffleArray(BGM_FILES);
-        
+
         // If the first song of new shuffle is same as last played, swap with another
         if (bgmPlaylist.length > 1 && bgmPlaylist[0] === lastSong) {
             const swapIndex = 1 + Math.floor(Math.random() * (bgmPlaylist.length - 1));
             [bgmPlaylist[0], bgmPlaylist[swapIndex]] = [bgmPlaylist[swapIndex], bgmPlaylist[0]];
         }
-        
+
         bgmCurrentIndex = 0;
     }
-    
+
     const nextTrack = bgmPlaylist[bgmCurrentIndex];
     bgmCurrentIndex++;
-    
+
     bgm = new Audio(nextTrack);
     bgm.volume = 0.5;
     bgm.addEventListener('ended', playNextBgm);

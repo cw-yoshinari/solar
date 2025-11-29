@@ -3,6 +3,10 @@ body {
     padding: 0;
     overflow: hidden;
     background-color: #050510;
+    background-image: url('assets/galaxy_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     /* Deep space blue/black */
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,6 +28,7 @@ body {
     /* Game width */
     height: 800px;
     /* Game height */
+    background-color: rgba(0, 0, 0, 0.6);
     box-shadow: 0 0 50px rgba(0, 100, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.1);
 }
