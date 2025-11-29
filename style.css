@@ -1,0 +1,178 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #050510;
+    /* Deep space blue/black */
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#main-layout {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#game-container {
+    position: relative;
+    width: 600px;
+    /* Game width */
+    height: 800px;
+    /* Game height */
+    box-shadow: 0 0 50px rgba(0, 100, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#game-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    pointer-events: none;
+    /* Let clicks pass through to game */
+}
+
+#score {
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+#next-planet {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#next-planet-img {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Evolution Sidebar */
+#evolution-sidebar {
+    width: 200px;
+    height: 800px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: hidden;
+    /* Hide scrollbar */
+}
+
+#evolution-sidebar h2 {
+    margin: 0 0 15px 0;
+    font-size: 24px;
+    text-align: center;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+#evolution-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Reduced gap */
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    /* Distribute evenly */
+}
+
+.evolution-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    /* Reduced padding */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    transition: transform 0.2s;
+    flex: 1;
+    /* Allow items to stretch slightly if needed */
+}
+
+.evolution-item:hover {
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.evolution-item img {
+    width: 35px;
+    /* Reduced size */
+    height: 35px;
+    object-fit: contain;
+}
+
+.evolution-item span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Game Over UI */
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.game-over-content {
+    text-align: center;
+}
+
+.game-over-content h1 {
+    font-size: 48px;
+    color: #ff4444;
+    text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+    margin-bottom: 20px;
+}
+
+.game-over-content p {
+    font-size: 28px;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    margin-bottom: 30px;
+}
+
+.game-over-content button {
+    padding: 15px 40px;
+    font-size: 24px;
+    background: linear-gradient(135deg, #00aaff, #0066cc);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.game-over-content button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 170, 255, 0.8);
+}

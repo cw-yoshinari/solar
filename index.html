@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planet Merge Game</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PIXI.js -->
+    <script src="https://pixijs.download/release/pixi.min.js"></script>
+
+    <!-- Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+</head>
+
+<body>
+    <div id="main-layout">
+        <div id="game-container">
+            <div id="ui-layer">
+                <div id="score">Score: 0</div>
+                <div id="next-planet">
+                    Next: <img id="next-planet-img" src="assets/asteroid.png" alt="Next planet">
+                </div>
+            </div>
+        </div>
+
+        <div id="evolution-sidebar">
+            <h2>シンカの輪</h2>
+            <div id="evolution-list">
+                <!-- Planets will be added here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/game_objects.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
