@@ -382,9 +382,10 @@ function setupEvolutionGuide() {
             <span>${planet.ja_name}</span>
         `;
 
-        // Debug: click to set next planet
+        // Debug: Ctrl + click to set next planet
         el.style.cursor = 'pointer';
         el.addEventListener('click', (e) => {
+            if (!e.ctrlKey) return; // Require Ctrl key
             e.stopPropagation();
             nextPlanetIndex = index;
             document.getElementById('next-planet-img').src = planet.img;

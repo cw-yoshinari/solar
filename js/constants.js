@@ -22,8 +22,8 @@ const CONSTANTS = {
     PLANETS: [
         { name: 'asteroid', ja_name: '小惑星', radius: 44, score: 1, img: 'assets/asteroid.png' },
         { name: 'moon', ja_name: '月', radius: 57, score: 3, img: 'assets/moon.png' },
-        { name: 'mercury', ja_name: '水星', radius: 85, score: 6, img: 'assets/mercury.png' },
-        { name: 'mars', ja_name: '火星', radius: 91, score: 10, img: 'assets/mars.png' },
+        { name: 'mercury', ja_name: '水星', radius: 84, score: 6, img: 'assets/mercury.png' },
+        { name: 'mars', ja_name: '火星', radius: 92, score: 10, img: 'assets/mars.png' },
         { name: 'venus', ja_name: '金星', radius: 105, score: 15, img: 'assets/venus.png' },
         { name: 'earth', ja_name: '地球', radius: 134, score: 21, img: 'assets/earth.png' },
         { name: 'neptune', ja_name: '海王星', radius: 172, score: 28, img: 'assets/neptune.png' },
