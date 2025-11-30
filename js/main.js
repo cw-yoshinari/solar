@@ -24,7 +24,7 @@ const BGM_FILES = [
 ];
 let bgmPlaylist = [];
 let bgmCurrentIndex = 0;
-const GAME_OVER_LINE = 100; // Y position for game over check
+const GAME_OVER_LINE = 102; // Y position for game over check (758px from floor)
 const GAME_OVER_GRACE_TIME = 3000; // 3 seconds grace period
 const VELOCITY_THRESHOLD = 0.5; // Only check settled planets (low velocity)
 
@@ -194,7 +194,7 @@ function spawnNextPlanet() {
     // Determine spawn X position (use last mouse position or center)
     let spawnX = CONSTANTS.SCREEN_WIDTH / 2;
     if (lastMouseX !== null) {
-        const collisionRadius = planetData.radius * 0.65;
+        const collisionRadius = planetData.radius * CONSTANTS.COLLISION_RATIO;
         spawnX = Math.max(collisionRadius, Math.min(lastMouseX, CONSTANTS.SCREEN_WIDTH - collisionRadius));
     }
 
@@ -224,8 +224,8 @@ function onPointerMove(e) {
 
     if (isDropping || !currentPlanet) return;
 
-    // Clamp to screen bounds using collision radius (0.65 of visual)
-    const collisionRadius = currentPlanet.radius * 0.65;
+    // Clamp to screen bounds using collision radius from constants
+    const collisionRadius = currentPlanet.radius * CONSTANTS.COLLISION_RATIO;
     x = Math.max(collisionRadius, Math.min(x, CONSTANTS.SCREEN_WIDTH - collisionRadius));
 
     currentPlanet.container.x = x;
@@ -281,7 +281,7 @@ function createPhysicalPlanet(data, x, y, rotation = 0) {
     planets.push({ body, visual });
 }
 
-function handleMerge(bodyA, bodyB, nextPlanetData) {
+function handleMerge(bodyA, bodyB, nextPlanetData, currentPlanetData) {
     // Remove old bodies
     Matter.World.remove(Physics.world, [bodyA, bodyB]);
 
@@ -298,15 +298,16 @@ function handleMerge(bodyA, bodyB, nextPlanetData) {
         planets = planets.filter(p => p !== planetB);
     }
 
-    // Calculate midpoint for new planet
-    const midX = (bodyA.position.x + bodyB.position.x) / 2;
-    const midY = (bodyA.position.y + bodyB.position.y) / 2;
+    if (nextPlanetData) {
+        // Normal merge: create new planet
+        const midX = (bodyA.position.x + bodyB.position.x) / 2;
+        const midY = (bodyA.position.y + bodyB.position.y) / 2;
+        createPhysicalPlanet(nextPlanetData, midX, midY);
+    }
 
-    // Create new planet
-    createPhysicalPlanet(nextPlanetData, midX, midY);
+    // Update Score: use current (merged) planet's score
+    score += currentPlanetData.score;
 
-    // Update Score
-    score += nextPlanetData.score; // Or some logic based on merged planets
     document.getElementById('score').innerText = `Score: ${score}`;
 
     // Play merge sound effect
@@ -372,7 +373,7 @@ function setupEvolutionGuide() {
     const listContainer = document.getElementById('evolution-list');
     const planets = CONSTANTS.PLANETS;
 
-    planets.forEach((planet) => {
+    planets.forEach((planet, index) => {
         const el = document.createElement('div');
         el.className = 'evolution-item';
 
@@ -380,6 +381,15 @@ function setupEvolutionGuide() {
             <img src="${planet.img}" alt="${planet.name}">
             <span>${planet.ja_name}</span>
         `;
+
+        // Debug: click to set next planet
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nextPlanetIndex = index;
+            document.getElementById('next-planet-img').src = planet.img;
+            console.log(`[DEBUG] Next planet set to: ${planet.ja_name}`);
+        });
 
         listContainer.appendChild(el);
     });

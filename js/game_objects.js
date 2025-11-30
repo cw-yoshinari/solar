@@ -14,8 +14,11 @@ class Planet {
         // Main Sprite
         this.sprite = PIXI.Sprite.from(planetData.img);
         this.sprite.anchor.set(0.5);
-        this.sprite.width = this.radius * 2;
-        this.sprite.height = this.radius * 2;
+        // Image is 1024x1024, planet drawn inside. Adjust DISPLAY_SCALE in constants.js
+        // radius = display diameter, sprite size adjusted by DISPLAY_SCALE
+        const displayScale = CONSTANTS.DISPLAY_SCALE || 1.0;
+        this.sprite.width = this.radius * 2 * displayScale;
+        this.sprite.height = this.radius * 2 * displayScale;
 
         // Add Wobbly Shader (Simple vertex displacement simulation via mesh or filter)
         // For simplicity and performance in Pixi v7, we can use a displacement filter or just scale oscillation.
@@ -54,9 +57,11 @@ class Planet {
         // Wobbly effect (Scaling)
         this.wobblePhase += this.wobbleSpeed;
         const scaleWobble = 1 + Math.sin(this.wobblePhase) * 0.02;
+        // Adjust DISPLAY_SCALE in constants.js to match visual size with radius
+        const displayScale = CONSTANTS.DISPLAY_SCALE || 1.0;
         this.sprite.scale.set(
-            (this.radius * 2 / this.sprite.texture.width) * scaleWobble,
-            (this.radius * 2 / this.sprite.texture.height) * (1 / scaleWobble)
+            (this.radius * 2 * displayScale / this.sprite.texture.width) * scaleWobble,
+            (this.radius * 2 * displayScale / this.sprite.texture.height) * (1 / scaleWobble)
         );
     }
 

@@ -34,7 +34,7 @@ body {
     position: relative;
     width: 600px;
     /* Game width */
-    height: 800px;
+    height: 860px;
     /* Game height */
     background-color: rgba(0, 0, 0, 0.6);
     box-shadow: 0 0 50px rgba(0, 100, 255, 0.2);
@@ -78,7 +78,7 @@ body {
 /* Evolution Sidebar */
 #evolution-sidebar {
     width: 200px;
-    height: 800px;
+    height: 860px;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
@@ -103,27 +103,31 @@ body {
 #evolution-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    /* Reduced gap */
+    gap: 18px;
+    /* Gap between items */
     width: 100%;
-    height: 100%;
-    justify-content: space-between;
-    /* Distribute evenly */
+    justify-content: flex-start;
+    /* Pack items together */
+    overflow: visible;
 }
 
 .evolution-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 2px 8px;
+    gap: 5px;
+    padding: 0px 8px;
+    height: 54px;
+    /* Fixed height - image overflows */
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     transition: transform 0.2s;
+    overflow: visible;
 }
 
 .evolution-item img {
-    width: 50px;
-    height: 50px;
+    width: 95px;
+    height: 95px;
+    margin-left: -15px;
     object-fit: contain;
 }
 

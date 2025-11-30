@@ -45,8 +45,8 @@ const Physics = {
     },
 
     createPlanetBody: function (x, y, radius, planetData) {
-        // Collision hitbox is 25% smaller than visual size
-        const collisionRadius = radius * 0.63;
+        // Use COLLISION_RATIO from constants (radius = display diameter)
+        const collisionRadius = radius * CONSTANTS.COLLISION_RATIO;
         const body = Matter.Bodies.circle(x, y, collisionRadius, {
             restitution: CONSTANTS.BOUNCINESS,
             friction: CONSTANTS.FRICTION,
@@ -77,13 +77,18 @@ const Physics = {
                 if (bodyA.label === bodyB.label && bodyA.label !== 'wall') {
                     // Check if they are planets (labels match planet names)
                     const planetIndex = CONSTANTS.PLANETS.findIndex(p => p.name === bodyA.label);
-                    if (planetIndex !== -1 && planetIndex < CONSTANTS.PLANETS.length - 1) {
+                    if (planetIndex !== -1) {
                         // Mark both bodies as processed
                         processedBodies.add(bodyA.id);
                         processedBodies.add(bodyB.id);
                         
-                        // Merge!
-                        onMerge(bodyA, bodyB, CONSTANTS.PLANETS[planetIndex + 1]);
+                        // Get next planet (null if sun - last planet)
+                        const nextPlanet = planetIndex < CONSTANTS.PLANETS.length - 1 
+                            ? CONSTANTS.PLANETS[planetIndex + 1] 
+                            : null;
+                        
+                        // Merge! (pass current planet for score if sun)
+                        onMerge(bodyA, bodyB, nextPlanet, CONSTANTS.PLANETS[planetIndex]);
                     }
                 }
             }
