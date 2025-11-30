@@ -13,8 +13,14 @@ let gameOverLine = null; // Visual indicator
 
 // BGM Shuffle System
 const BGM_FILES = [
+    'bgm/Dark_Classical_Gothic_Orchestral.mp3',
+    'bgm/Deep_Funk_60s_Soul.mp3',
     'bgm/Dub_Reggae_Echo.mp3',
-    'bgm/Jazz_Noir_Smoky_Slow.mp3'
+    'bgm/Gospel_Soulful_Orchestra.mp3',
+    'bgm/Jazz_Noir_Smoky_Slow.mp3',
+    'bgm/New_Orleans_Funk_Swamp_Funk.mp3',
+    'bgm/Samba_Batucada_Rio_Carnival.mp3',
+    'bgm/Symphonic_Jazz_Big_Band.mp3'
 ];
 let bgmPlaylist = [];
 let bgmCurrentIndex = 0;

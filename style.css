@@ -1,3 +1,11 @@
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -71,7 +79,7 @@ body {
 #evolution-sidebar {
     width: 200px;
     height: 800px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
@@ -87,8 +95,9 @@ body {
     margin: 0 0 15px 0;
     font-size: 24px;
     text-align: center;
-    color: #00ffff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
 }
 
 #evolution-list {
@@ -110,11 +119,6 @@ body {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     transition: transform 0.2s;
-}
-
-.evolution-item:hover {
-    transform: scale(1.02);
-    background: rgba(255, 255, 255, 0.1);
 }
 
 .evolution-item img {
@@ -176,4 +180,80 @@ body {
 .game-over-content button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 30px rgba(0, 170, 255, 0.8);
+}
+
+/* Responsive scaling for smaller screens */
+/* Base layout width: 600px game + 20px gap + 200px sidebar = 820px */
+
+@media screen and (max-width: 850px) {
+    #main-layout {
+        transform: scale(0.95);
+        transform-origin: center center;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    #main-layout {
+        transform: scale(0.9);
+    }
+}
+
+@media screen and (max-width: 750px) {
+    #main-layout {
+        transform: scale(0.85);
+    }
+}
+
+@media screen and (max-width: 700px) {
+    #main-layout {
+        transform: scale(0.8);
+    }
+}
+
+@media screen and (max-width: 650px) {
+    #main-layout {
+        transform: scale(0.75);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #main-layout {
+        transform: scale(0.7);
+    }
+}
+
+@media screen and (max-width: 550px) {
+    #main-layout {
+        transform: scale(0.65);
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #main-layout {
+        transform: scale(0.58);
+    }
+}
+
+@media screen and (max-width: 450px) {
+    #main-layout {
+        transform: scale(0.52);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #main-layout {
+        transform: scale(0.46);
+    }
+}
+
+@media screen and (max-width: 360px) {
+    #main-layout {
+        transform: scale(0.42);
+    }
+}
+
+@media screen and (max-width: 320px) {
+    #main-layout {
+        transform: scale(0.38);
+    }
 }
