@@ -214,7 +214,10 @@ function spawnNextPlanet() {
 function onPointerMove(e) {
     const gameContainer = document.getElementById('game-container');
     const rect = gameContainer.getBoundingClientRect();
-    let x = e.clientX - rect.left;
+    
+    // Calculate scale ratio to handle CSS transform scale
+    const scale = CONSTANTS.SCREEN_WIDTH / rect.width;
+    let x = (e.clientX - rect.left) * scale;
 
     // Track mouse X for spawning (before clamping)
     lastMouseX = x;
