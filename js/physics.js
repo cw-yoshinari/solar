@@ -5,6 +5,12 @@
 const Physics = {
     engine: null,  // Matter.jsエンジンインスタンス
     world: null,   // 物理世界インスタンス
+    walls: {       // 壁への参照（揺さぶり用）
+        ground: null,
+        left: null,
+        right: null,
+        originalPositions: null  // 元の位置を保存
+    },
 
     /**
      * 物理エンジンを初期化
@@ -58,8 +64,54 @@ const Physics = {
             wallOptions
         );
 
+        // 壁への参照を保存（揺さぶり機能用）
+        this.walls.ground = ground;
+        this.walls.left = leftWall;
+        this.walls.right = rightWall;
+        this.walls.originalPositions = {
+            ground: { x: ground.position.x, y: ground.position.y },
+            left: { x: leftWall.position.x, y: leftWall.position.y },
+            right: { x: rightWall.position.x, y: rightWall.position.y }
+        };
+
         // 壁を物理世界に追加
         Matter.World.add(this.world, [ground, leftWall, rightWall]);
+    },
+
+    /**
+     * 壁を揺さぶる（オフセット適用）
+     * @param {number} offsetX - X方向のオフセット
+     * @param {number} offsetY - Y方向のオフセット
+     */
+    shakeWalls: function (offsetX, offsetY) {
+        if (!this.walls.originalPositions) return;
+
+        const orig = this.walls.originalPositions;
+
+        // 床を移動
+        Matter.Body.setPosition(this.walls.ground, {
+            x: orig.ground.x + offsetX,
+            y: orig.ground.y + offsetY
+        });
+
+        // 左壁を移動
+        Matter.Body.setPosition(this.walls.left, {
+            x: orig.left.x + offsetX,
+            y: orig.left.y + offsetY
+        });
+
+        // 右壁を移動
+        Matter.Body.setPosition(this.walls.right, {
+            x: orig.right.x + offsetX,
+            y: orig.right.y + offsetY
+        });
+    },
+
+    /**
+     * 壁を元の位置にリセット
+     */
+    resetWalls: function () {
+        this.shakeWalls(0, 0);
     },
 
     /**

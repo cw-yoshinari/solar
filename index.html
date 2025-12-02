@@ -19,15 +19,20 @@
     <div id="main-layout">
         <!-- ゲームエリア: ミュージックプレイヤーとゲームコンテナを含む -->
         <div id="game-area">
-            <!-- BGMプレイヤー: 再生/停止、曲送り、音量調整 -->
-            <div id="music-player">
-                <div id="player-content">
-                    <button id="btn-prev" title="前の曲">⏮</button>
-                    <button id="btn-play" title="再生/一時停止">▶</button>
-                    <button id="btn-next" title="次の曲">⏭</button>
-                    <input type="range" id="volume-slider" min="0" max="100" value="50" title="音量">
+            <!-- ゲームヘッダー: 揺さぶりボタン（左）とBGMプレイヤー（右） -->
+            <div id="game-header">
+                <!-- 揺さぶりボタン: 押下中にスコアを消費して画面を揺らす -->
+                <button id="btn-shake" title="画面を揺さぶる（スコア消費）">🌀</button>
+                <!-- BGMプレイヤー: 再生/停止、曲送り、音量調整 -->
+                <div id="music-player">
+                    <div id="player-content">
+                        <button id="btn-prev" title="前の曲">⏮</button>
+                        <button id="btn-play" title="再生/一時停止">▶</button>
+                        <button id="btn-next" title="次の曲">⏭</button>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50" title="音量">
+                    </div>
+                    <button id="btn-toggle-player" title="プレイヤー表示切替">✕</button>
                 </div>
-                <button id="btn-toggle-player" title="プレイヤー表示切替">✕</button>
             </div>
             <!-- ゲームコンテナ: PIXIキャンバスとUIレイヤーを配置 -->
             <div id="game-container">

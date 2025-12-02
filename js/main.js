@@ -15,6 +15,13 @@ let lastMouseX = null;      // 最後のマウスX座標（惑星位置追従用
 let isGameOver = false;     // ゲームオーバーフラグ
 let gameOverLine = null;    // ゲームオーバーライン（視覚的表示）
 
+// ===== 画面揺さぶりシステム =====
+let isShaking = false;              // 揺さぶり中フラグ
+let lastScoreDeductTime = 0;        // 最後にスコアを減らした時刻
+const SHAKE_SCORE_COST = 50;        // 0.1秒あたりのスコアコスト
+const SHAKE_INTERVAL = 100;         // スコア減少間隔（ミリ秒）
+const SHAKE_MIN_SCORE = 50;         // 揺さぶりに必要な最低スコア
+
 // ===== BGMシャッフルシステム =====
 const BGM_FILES = [
     { file: 'bgm/Bellhart.flac', name: 'Bellhart' },
@@ -142,10 +149,19 @@ async function initGame() {
         if (gameOverLine) {
             gameOverLine.alpha = dangerPlanetExists ? 0.5 + Math.sin(Date.now() / 100) * 0.3 : 0.3;
         }
+
+        // 揺さぶり処理
+        processShaking();
     });
 
     // 進化ガイドを設定
     setupEvolutionGuide();
+
+    // 揺さぶりボタンを設定
+    setupShakeButton();
+
+    // デバッグ用: スコアCtrl+クリックで+100
+    setupScoreDebug();
 }
 
 // ===== BGM関連関数 =====
@@ -511,6 +527,9 @@ function handleMerge(bodyA, bodyB, nextPlanetData, currentPlanetData) {
     score += currentPlanetData.score;
     document.getElementById('score').innerText = `Score: ${score}`;
 
+    // 揺さぶりボタンの状態を更新
+    updateShakeButtonState();
+
     // マージ効果音を再生
     playSE('se/remove.wav');
 }
@@ -522,6 +541,9 @@ function handleMerge(bodyA, bodyB, nextPlanetData, currentPlanetData) {
  */
 function triggerGameOver() {
     isGameOver = true;
+
+    // 揺さぶりを停止
+    stopShaking();
 
     // BGMを停止
     if (bgm) {
@@ -569,8 +591,15 @@ function resetGame() {
     score = 0;
     isGameOver = false;
     isDropping = false;
+    isShaking = false;
     nextPlanetIndex = Math.floor(Math.random() * 3);
     document.getElementById('score').innerText = `Score: ${score}`;
+
+    // 壁を元の位置にリセット
+    Physics.resetWalls();
+
+    // 揺さぶりボタンの状態を更新
+    updateShakeButtonState();
 
     // BGMを再開
     playNextBgm();
@@ -578,6 +607,148 @@ function resetGame() {
 
     // 新しい惑星を生成
     spawnNextPlanet();
+}
+
+// ===== デバッグ関連関数 =====
+
+/**
+ * スコアデバッグ機能を設定
+ * Ctrl + クリックでスコアを+100
+ */
+function setupScoreDebug() {
+    const scoreEl = document.getElementById('score');
+    if (!scoreEl) return;
+
+    scoreEl.style.cursor = 'pointer';
+    scoreEl.style.pointerEvents = 'auto';
+
+    scoreEl.addEventListener('click', (e) => {
+        if (!e.ctrlKey) return;  // Ctrlキー必須
+        e.stopPropagation();
+
+        score += 100;
+        scoreEl.innerText = `Score: ${score}`;
+        updateShakeButtonState();
+        console.log(`[DEBUG] Score increased to: ${score}`);
+    });
+}
+
+// ===== 画面揺さぶり関連関数 =====
+
+/**
+ * 揺さぶりボタンを設定
+ */
+function setupShakeButton() {
+    const btnShake = document.getElementById('btn-shake');
+    if (!btnShake) return;
+
+    // 押下開始
+    btnShake.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        startShaking();
+    });
+
+    // 押下終了
+    btnShake.addEventListener('pointerup', (e) => {
+        e.stopPropagation();
+        stopShaking();
+    });
+
+    // ボタン領域から離れた場合も終了
+    btnShake.addEventListener('pointerleave', (e) => {
+        e.stopPropagation();
+        stopShaking();
+    });
+
+    // ボタンのクリックがゲームに影響しないようにする
+    btnShake.addEventListener('click', (e) => e.stopPropagation());
+
+    // 初期状態を更新
+    updateShakeButtonState();
+}
+
+/**
+ * 揺さぶりを開始
+ */
+function startShaking() {
+    // スコアが足りない場合は発動しない
+    if (score <= SHAKE_MIN_SCORE || isGameOver) return;
+
+    isShaking = true;
+    lastScoreDeductTime = Date.now();
+
+    const btnShake = document.getElementById('btn-shake');
+    if (btnShake) {
+        btnShake.classList.add('shaking');
+    }
+}
+
+/**
+ * 揺さぶりを停止
+ */
+function stopShaking() {
+    if (!isShaking) return;
+
+    isShaking = false;
+
+    // 壁を元の位置にリセット
+    Physics.resetWalls();
+
+    const btnShake = document.getElementById('btn-shake');
+    if (btnShake) {
+        btnShake.classList.remove('shaking');
+    }
+
+    updateShakeButtonState();
+}
+
+/**
+ * 揺さぶりボタンの状態を更新（有効/無効）
+ */
+function updateShakeButtonState() {
+    const btnShake = document.getElementById('btn-shake');
+    if (!btnShake) return;
+
+    if (score <= SHAKE_MIN_SCORE || isGameOver) {
+        btnShake.classList.add('disabled');
+    } else {
+        btnShake.classList.remove('disabled');
+    }
+}
+
+/**
+ * 揺さぶり処理（ゲームループから呼び出し）
+ */
+function processShaking() {
+    if (!isShaking) return;
+
+    const now = Date.now();
+
+    // スコア減少処理（0.1秒ごと）
+    if (now - lastScoreDeductTime >= SHAKE_INTERVAL) {
+        score -= SHAKE_SCORE_COST;
+        lastScoreDeductTime = now;
+
+        // スコアが0以下にならないようにする
+        if (score < 0) {
+            score = 0;
+        }
+
+        document.getElementById('score').innerText = `Score: ${score}`;
+
+        // スコアが足りなくなったら停止
+        if (score <= SHAKE_MIN_SCORE) {
+            stopShaking();
+            return;
+        }
+    }
+
+    // 壁揺さぶり効果（ランダムに±5px）
+    const offsetX = Math.floor(Math.random() * 11) - 5; // -5 ~ 5
+    const offsetY = Math.floor(Math.random() * 11) - 5; // -5 ~ 5
+
+    Physics.shakeWalls(offsetX, offsetY);
 }
 
 // ===== 進化ガイド =====
