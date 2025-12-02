@@ -1,44 +1,53 @@
-// Game Objects handling Pixi.js rendering
+/**
+ * ゲームオブジェクトモジュール
+ * PIXI.jsを使用した惑星のレンダリングを管理
+ */
 
+/**
+ * 惑星クラス
+ * 物理ボディと視覚表現を結びつけ、ゆらゆらエフェクトを適用
+ */
 class Planet {
+    /**
+     * 惑星インスタンスを生成
+     * @param {Object} planetData - 惑星データ（定数から取得）
+     * @param {number} x - 初期X座標
+     * @param {number} y - 初期Y座標
+     * @param {Matter.Body|null} physicsBody - 物理ボディ（プレビュー時はnull）
+     */
     constructor(planetData, x, y, physicsBody) {
-        this.data = planetData;
-        this.body = physicsBody;
-        this.radius = planetData.radius;
+        this.data = planetData;        // 惑星データ参照
+        this.body = physicsBody;       // 物理ボディ参照
+        this.radius = planetData.radius;  // 表示半径
 
-        // Container for sprite and effects
+        // スプライトとエフェクト用のコンテナを作成
         this.container = new PIXI.Container();
         this.container.x = x;
         this.container.y = y;
 
-        // Main Sprite
+        // メインスプライトを生成
         this.sprite = PIXI.Sprite.from(planetData.img);
-        this.sprite.anchor.set(0.5);
-        // Image is 1024x1024, planet drawn inside. Adjust DISPLAY_SCALE in constants.js
-        // radius = display diameter, sprite size adjusted by DISPLAY_SCALE
+        this.sprite.anchor.set(0.5);  // アンカーを中央に設定
+
+        // 表示サイズを調整（画像は1024x1024、DISPLAY_SCALEで調整）
         const displayScale = CONSTANTS.DISPLAY_SCALE || 1.0;
         this.sprite.width = this.radius * 2 * displayScale;
         this.sprite.height = this.radius * 2 * displayScale;
 
-        // Add Wobbly Shader (Simple vertex displacement simulation via mesh or filter)
-        // For simplicity and performance in Pixi v7, we can use a displacement filter or just scale oscillation.
-        // Let's use a simple scale oscillation for "wobbly" effect as shaders can be complex to setup without external files.
-        // Or we can use a custom filter if provided. 
-        // Let's try a simple "breathing" effect + rotation for now, and maybe a displacement filter if we have a noise texture.
-        // Since we don't have a noise texture readily available, we'll use sine wave scaling.
+        // ===== ゆらゆらエフェクト設定 =====
+        // パフォーマンスを考慮し、シェーダーではなくスケール変化で表現
+        this.wobblePhase = Math.random() * Math.PI * 2;  // 初期位相（ランダム）
+        this.wobbleSpeed = 0.05;  // ゆらぎ速度
 
-        this.wobblePhase = Math.random() * Math.PI * 2;
-        this.wobbleSpeed = 0.05;
-
-        // Glow Filter
-        // Requires pixi-filters
+        // ===== グローフィルター（オプション） =====
+        // pixi-filtersが利用可能な場合のみ適用
         if (PIXI.filters && PIXI.filters.GlowFilter) {
             const glowFilter = new PIXI.filters.GlowFilter({
-                distance: 15,
-                outerStrength: 2,
-                innerStrength: 0,
-                color: 0xffffff,
-                quality: 0.1
+                distance: 15,        // グローの広がり
+                outerStrength: 2,    // 外側の強さ
+                innerStrength: 0,    // 内側の強さ
+                color: 0xffffff,     // グローの色
+                quality: 0.1         // 品質（低いほど軽い）
             });
             this.sprite.filters = [glowFilter];
         }
@@ -46,18 +55,25 @@ class Planet {
         this.container.addChild(this.sprite);
     }
 
+    /**
+     * フレーム更新処理
+     * 物理ボディとの同期、ゆらゆらエフェクトを適用
+     * @param {number} delta - フレーム間隔（PIXI.Tickerから提供）
+     */
     update(delta) {
+        // 物理ボディがない場合は更新不要（プレビュー惑星）
         if (!this.body) return;
 
-        // Sync with physics
+        // 物理ボディの位置・回転と同期
         this.container.x = this.body.position.x;
         this.container.y = this.body.position.y;
         this.container.rotation = this.body.angle;
 
-        // Wobbly effect (Scaling)
+        // ゆらゆらエフェクト（サイン波によるスケール変化）
         this.wobblePhase += this.wobbleSpeed;
-        const scaleWobble = 1 + Math.sin(this.wobblePhase) * 0.02;
-        // Adjust DISPLAY_SCALE in constants.js to match visual size with radius
+        const scaleWobble = 1 + Math.sin(this.wobblePhase) * 0.02;  // ±2%の変化
+
+        // 表示スケールを適用しながらゆらぎを反映
         const displayScale = CONSTANTS.DISPLAY_SCALE || 1.0;
         this.sprite.scale.set(
             (this.radius * 2 * displayScale / this.sprite.texture.width) * scaleWobble,
@@ -65,6 +81,10 @@ class Planet {
         );
     }
 
+    /**
+     * 惑星を破棄
+     * コンテナと子要素を完全に削除
+     */
     destroy() {
         this.container.destroy({ children: true });
     }

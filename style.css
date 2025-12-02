@@ -1,65 +1,77 @@
+/**
+ * Planet Merge Game スタイルシート
+ * 宇宙テーマのゲームUI
+ */
+
+/* ===== グローバルリセット ===== */
 * {
+    /* テキスト選択を無効化（ゲーム操作の妨げ防止） */
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    /* モバイルでのタップハイライトを無効化 */
     -webkit-tap-highlight-color: transparent;
 }
 
+/* ===== ボディ設定 ===== */
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    /* 深い宇宙の青黒色 */
     background-color: #050510;
+    /* 銀河背景画像 */
     background-image: url('assets/galaxy_bg.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* Deep space blue/black */
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* 中央配置 */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
+/* ===== メインレイアウト ===== */
 #main-layout {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 20px;
 }
 
+/* ===== ゲームコンテナ ===== */
 #game-container {
     position: relative;
-    width: 600px;
-    /* Game width */
-    height: 860px;
-    /* Game height */
+    width: 600px;  /* ゲーム幅 */
+    height: 860px; /* ゲーム高さ */
     background-color: rgba(0, 0, 0, 0.6);
     box-shadow: 0 0 50px rgba(0, 100, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+/* PIXIキャンバスを絶対配置 */
 #game-container canvas {
     position: absolute;
     top: 0;
     left: 0;
 }
 
+/* ===== UIレイヤー（スコア・次の惑星表示） ===== */
 #ui-layer {
     position: absolute;
     top: 20px;
     left: 20px;
     z-index: 10;
-    pointer-events: none;
-    /* Let clicks pass through to game */
+    pointer-events: none; /* クリックをゲームに通過させる */
 }
 
 #score {
     font-size: 24px;
     font-weight: bold;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* シアンのグロー */
 }
 
 #next-planet {
@@ -75,7 +87,7 @@ body {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Evolution Sidebar */
+/* ===== 進化ガイドサイドバー ===== */
 #evolution-sidebar {
     width: 200px;
     height: 860px;
@@ -87,8 +99,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: hidden;
-    /* Hide scrollbar */
+    overflow-y: hidden; /* スクロールバー非表示 */
 }
 
 #evolution-sidebar h2 {
@@ -103,11 +114,9 @@ body {
 #evolution-list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    /* Gap between items */
+    gap: 18px; /* アイテム間の間隔 */
     width: 100%;
     justify-content: flex-start;
-    /* Pack items together */
     overflow: visible;
 }
 
@@ -116,8 +125,7 @@ body {
     align-items: center;
     gap: 5px;
     padding: 0px 8px;
-    height: 54px;
-    /* Fixed height - image overflows */
+    height: 54px; /* 固定高さ - 画像ははみ出す */
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     transition: transform 0.2s;
@@ -136,7 +144,7 @@ body {
     font-weight: bold;
 }
 
-/* Game Over UI */
+/* ===== ゲームオーバーUI ===== */
 #game-over {
     position: absolute;
     top: 0;
@@ -186,8 +194,8 @@ body {
     box-shadow: 0 0 30px rgba(0, 170, 255, 0.8);
 }
 
-/* Responsive scaling for smaller screens */
-/* Base layout width: 600px game + 20px gap + 200px sidebar = 820px */
+/* ===== レスポンシブスケーリング ===== */
+/* 基本レイアウト幅: 600px(ゲーム) + 20px(間隔) + 200px(サイドバー) = 820px */
 
 @media screen and (max-width: 850px) {
     #main-layout {
@@ -260,4 +268,121 @@ body {
     #main-layout {
         transform: scale(0.38);
     }
+}
+
+/* ===== ゲームエリアラッパー ===== */
+#game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* ===== ミュージックプレイヤー ===== */
+#music-player {
+    height: 32px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-bottom: none;
+    padding: 0 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+/* 折りたたみ時のスタイル */
+#music-player.collapsed {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+#music-player.collapsed #player-content {
+    display: none;
+}
+
+#player-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 表示切替ボタン */
+#btn-toggle-player {
+    font-size: 14px !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+}
+
+#btn-toggle-player:hover {
+    background: rgba(0, 255, 255, 0.2) !important;
+}
+
+/* プレイヤーボタン共通スタイル */
+#music-player button {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+}
+
+#music-player button:hover {
+    background: rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* 再生ボタン（大きめ） */
+#btn-play {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 11px !important;
+    background: linear-gradient(135deg, rgba(0, 170, 255, 0.4), rgba(0, 255, 255, 0.3)) !important;
+}
+
+/* 音量スライダー */
+#volume-slider {
+    width: 60px;
+    min-width: 60px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
 }

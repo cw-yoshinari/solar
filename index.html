@@ -7,33 +7,50 @@
     <title>Planet Merge Game</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- PIXI.js -->
+    <!-- PIXI.js: 2Dレンダリングライブラリ -->
     <script src="https://pixijs.download/release/pixi.min.js"></script>
 
-    <!-- Matter.js -->
+    <!-- Matter.js: 2D物理エンジン -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 </head>
 
 <body>
+    <!-- メインレイアウト: ゲームエリアと進化ガイドのサイドバー -->
     <div id="main-layout">
-        <div id="game-container">
-            <div id="ui-layer">
-                <div id="score">Score: 0</div>
-                <div id="next-planet">
-                    Next: <img id="next-planet-img" src="assets/asteroid.png" alt="Next planet">
+        <!-- ゲームエリア: ミュージックプレイヤーとゲームコンテナを含む -->
+        <div id="game-area">
+            <!-- BGMプレイヤー: 再生/停止、曲送り、音量調整 -->
+            <div id="music-player">
+                <div id="player-content">
+                    <button id="btn-prev" title="前の曲">⏮</button>
+                    <button id="btn-play" title="再生/一時停止">▶</button>
+                    <button id="btn-next" title="次の曲">⏭</button>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50" title="音量">
+                </div>
+                <button id="btn-toggle-player" title="プレイヤー表示切替">✕</button>
+            </div>
+            <!-- ゲームコンテナ: PIXIキャンバスとUIレイヤーを配置 -->
+            <div id="game-container">
+                <!-- UIレイヤー: スコアと次の惑星表示 -->
+                <div id="ui-layer">
+                    <div id="score">Score: 0</div>
+                    <div id="next-planet">
+                        Next: <img id="next-planet-img" src="assets/asteroid.png" alt="Next planet">
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- 進化ガイドサイドバー: 惑星の進化順序を表示 -->
         <div id="evolution-sidebar">
             <h2>シンカ順</h2>
             <div id="evolution-list">
-                <!-- Planets will be added here by JS -->
+                <!-- 惑星リストはJSで動的に追加される -->
             </div>
         </div>
     </div>
 
-    <!-- Game Scripts -->
+    <!-- ゲームスクリプト: 順序が重要（定数 → 物理 → オブジェクト → メイン） -->
     <script src="js/constants.js"></script>
     <script src="js/physics.js"></script>
     <script src="js/game_objects.js"></script>
